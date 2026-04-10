@@ -1,0 +1,15 @@
+{
+  "name": "movie-theater",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "db:migrate": "npm run migrate -w packages/database",
+    "db:seed": "npm run seed -w packages/database",
+    "db:reset": "npm run reset -w packages/database"
+  },
+  "optionalDependencies": {
+    "@esbuild/darwin-arm64": "^0.28.0"
+  }
+}

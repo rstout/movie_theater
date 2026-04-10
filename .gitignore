@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+cdk.out/
+.cdk.staging/
+*.js.map
+*.d.ts
+!packages/database/migrations/*.js
+.idea/

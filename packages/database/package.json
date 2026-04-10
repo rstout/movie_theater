@@ -1,0 +1,21 @@
+{
+  "name": "@movie-theater/database",
+  "private": true,
+  "scripts": {
+    "migrate": "node-pg-migrate up --migration-file-language ts --tsconfig tsconfig.json --envPath ../../.env",
+    "migrate:down": "node-pg-migrate down --migration-file-language ts --tsconfig tsconfig.json --envPath ../../.env",
+    "seed": "tsx seeds/seed.ts",
+    "reset": "node-pg-migrate down --count 100 --migration-file-language ts --tsconfig tsconfig.json && npm run migrate && npm run seed"
+  },
+  "dependencies": {
+    "@tsconfig/node20": "^20.1.9",
+    "pg": "^8.13.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.0",
+    "node-pg-migrate": "^7.9.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
