@@ -5,5 +5,6 @@ cdk.out/
 .cdk.staging/
 *.js.map
 *.d.ts
+*.tsbuildinfo
 !packages/database/migrations/*.js
 .idea/
