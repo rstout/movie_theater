@@ -4,10 +4,12 @@ import {
   ConflictError,
   NotFoundError,
 } from "../services/bookingService";
+import { initPool } from "../utils/db";
 import { success, error } from "../utils/response";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
+    await initPool();
     const bookingId = event.pathParameters?.id;
     if (!bookingId) {
       return error("Booking ID is required", 400);

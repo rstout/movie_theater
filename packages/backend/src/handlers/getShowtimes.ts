@@ -1,9 +1,11 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
 import { getShowtimesForMovie } from "../services/showtimeService";
+import { initPool } from "../utils/db";
 import { success, error } from "../utils/response";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
+    await initPool();
     const movieId = event.pathParameters?.movieId;
     if (!movieId) {
       return error("movieId is required", 400);

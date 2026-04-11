@@ -3,11 +3,13 @@ import {
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
 import runner from "node-pg-migrate";
+import { Client } from "pg";
 import path from "path";
+import { runSeed } from "../seeds/seed-fn";
 
 const smClient = new SecretsManagerClient({});
 
-async function getDatabaseUrl(): Promise<string> {
+async function getDbConfig() {
   const secretArn = process.env.DATABASE_SECRET_ARN!;
   const host = process.env.DATABASE_HOST!;
   const dbName = process.env.DATABASE_NAME!;
@@ -17,7 +19,14 @@ async function getDatabaseUrl(): Promise<string> {
   );
   const secret = JSON.parse(SecretString!);
 
-  return `postgresql://${secret.username}:${encodeURIComponent(secret.password)}@${host}:5432/${dbName}?ssl=true`;
+  return {
+    host,
+    port: 5432,
+    database: dbName,
+    user: secret.username,
+    password: secret.password,
+    ssl: { rejectUnauthorized: false },
+  };
 }
 
 export async function handler(
@@ -31,15 +40,25 @@ export async function handler(
     };
   }
 
-  const databaseUrl = await getDatabaseUrl();
+  const config = await getDbConfig();
+  const client = new Client(config);
+  await client.connect();
 
-  await runner({
-    databaseUrl,
-    dir: path.join(__dirname, "migrations"),
-    direction: "up",
-    migrationsTable: "pgmigrations",
-    log: console.log,
-  });
+  try {
+    await runner({
+      dbClient: client,
+      dir: path.join(__dirname, "migrations"),
+      direction: "up",
+      migrationsTable: "pgmigrations",
+      log: console.log,
+    });
+
+    // Seed data after migrations
+    console.log("Running seed...");
+    await runSeed(client);
+  } finally {
+    await client.end();
+  }
 
   return {
     PhysicalResourceId: "migration",

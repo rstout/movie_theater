@@ -3,10 +3,12 @@ import {
   createBooking,
   ConflictError,
 } from "../services/bookingService";
+import { initPool } from "../utils/db";
 import { success, error } from "../utils/response";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
+    await initPool();
     const body = JSON.parse(event.body || "{}");
     const { userId, showId, seatIds } = body;
 

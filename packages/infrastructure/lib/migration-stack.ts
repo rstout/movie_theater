@@ -42,13 +42,15 @@ export class MigrationStack extends cdk.Stack {
         bundling: {
           externalModules: ["pg-native", "@aws-sdk/*"],
           commandHooks: {
-            beforeBundling(inputDir: string, outputDir: string) {
-              return [
-                `cp -r ${inputDir}/packages/database/migrations ${outputDir}/migrations`,
-              ];
-            },
-            afterBundling() {
+            beforeBundling() {
               return [];
+            },
+            afterBundling(inputDir: string, outputDir: string) {
+              const migrationsDir = `${inputDir}/packages/database/migrations`;
+              return [
+                `mkdir -p ${outputDir}/migrations`,
+                `for f in ${migrationsDir}/*.ts; do npx esbuild "$f" --outfile="${outputDir}/migrations/$(basename "\${f%.ts}.js")" --format=cjs --platform=node; done`,
+              ];
             },
             beforeInstall() {
               return [];

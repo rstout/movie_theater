@@ -1,9 +1,11 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
 import { getSeatMap } from "../services/showtimeService";
+import { initPool } from "../utils/db";
 import { success, error } from "../utils/response";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
+    await initPool();
     const showId = event.pathParameters?.showId;
     if (!showId) {
       return error("showId is required", 400);
