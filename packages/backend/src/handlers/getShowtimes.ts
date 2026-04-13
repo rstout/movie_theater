@@ -11,7 +11,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return error("movieId is required", 400);
     }
     const showtimes = await getShowtimesForMovie(movieId);
-    return success(showtimes);
+    return success(showtimes, {
+      cacheControl: "public, max-age=60, stale-while-revalidate=120",
+    });
   } catch (err: any) {
     console.error("getShowtimes error:", err);
     return error(err.message);

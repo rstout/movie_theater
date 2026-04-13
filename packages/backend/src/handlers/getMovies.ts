@@ -7,7 +7,9 @@ export const handler: APIGatewayProxyHandler = async () => {
   try {
     await initPool();
     const movies = await listMovies();
-    return success(movies);
+    return success(movies, {
+      cacheControl: "public, max-age=300, stale-while-revalidate=600",
+    });
   } catch (err: any) {
     console.error("getMovies error:", err);
     return error(err.message);

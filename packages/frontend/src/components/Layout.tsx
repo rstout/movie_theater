@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { UserPicker } from "./UserPicker";
 
 interface Props {
@@ -7,18 +7,24 @@ interface Props {
 }
 
 export function Layout({ currentUserId, onSelectUser }: Props) {
+  const location = useLocation();
+
   return (
     <>
       <header className="header">
         <div className="container header-inner">
-          <h1>
-            <Link to="/">Movie Theater</Link>
-          </h1>
+          <Link to="/" className="brand">
+            <span className="brand-dot" />
+            Marquee
+            <span className="brand-mark">Movie Theater</span>
+          </Link>
           <UserPicker currentUserId={currentUserId} onSelect={onSelectUser} />
         </div>
       </header>
       <main className="container">
-        <Outlet />
+        <div className="page-fade" key={location.pathname}>
+          <Outlet />
+        </div>
       </main>
     </>
   );

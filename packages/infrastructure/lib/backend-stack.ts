@@ -43,7 +43,7 @@ export class BackendStack extends cdk.Stack {
         sourceMap: true,
       },
       timeout: cdk.Duration.seconds(10),
-      memorySize: 256,
+      memorySize: 1024,
     };
 
     // Helper to create a Lambda function

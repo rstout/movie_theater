@@ -6,6 +6,7 @@ export function useSeats(showId: string | undefined) {
     queryKey: ["seats", showId],
     queryFn: () => api.getSeats(showId!),
     enabled: !!showId,
-    refetchInterval: 4000,
+    staleTime: 10_000,
+    refetchOnWindowFocus: true,
   });
 }

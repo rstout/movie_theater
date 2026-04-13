@@ -52,58 +52,100 @@ export function BookingPage({ userId }: Props) {
     setSelectedIds(new Set());
   }, []);
 
-  if (isLoading) return <div className="loading">Loading seat map...</div>;
+  if (isLoading) return <BookingPageSkeleton />;
   if (!data) return <div className="loading">Showtime not found.</div>;
 
   const { showtime, seats } = data;
   const selectedSeats = seats.filter((s) => selectedIds.has(s.seat_id));
 
+  const formattedDate = new Date(showtime.date).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
+
   return (
-    <>
+    <div className="booking-page">
       <Link to={`/movies/${showtime.movie_id}`} className="back-link">
-        &larr; Back to showtimes
+        ← Back to showtimes
       </Link>
-      <h2 className="page-title">{showtime.movie_title}</h2>
-      <p style={{ color: "var(--color-text-muted)", marginTop: 4, fontSize: 14 }}>
-        {showtime.theater_name} &mdash; {showtime.auditorium_name} &middot;{" "}
-        {new Date(showtime.date).toLocaleDateString("en-US", {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-        })}{" "}
-        at {showtime.start_time}
-      </p>
+
+      <header className="booking-header">
+        <span className="eyebrow">Choose Your Seats</span>
+        <h1 style={{ marginTop: 10 }}>{showtime.movie_title}</h1>
+        <div className="subtitle">
+          <span>{showtime.theater_name}</span>
+          <span className="dot" />
+          <span>{showtime.auditorium_name}</span>
+          <span className="dot" />
+          <span>{formattedDate}</span>
+          <span className="dot" />
+          <span>{showtime.start_time}</span>
+        </div>
+      </header>
 
       {!userId && (
-        <p
-          style={{
-            marginTop: 16,
-            padding: "10px 16px",
-            background: "var(--color-surface)",
-            borderRadius: 8,
-            fontSize: 14,
-            color: "var(--color-seat-selected)",
-          }}
-        >
-          Please select a user from the header to book seats.
-        </p>
+        <div className="notice">
+          Select a guest from the header to reserve your seats.
+        </div>
       )}
 
-      <SeatMap
-        seats={seats}
-        selectedSeatIds={selectedIds}
-        onToggleSeat={handleToggleSeat}
-      />
+      <div className="booking-layout">
+        <div className="seat-map-wrap">
+          <SeatMap
+            seats={seats}
+            selectedSeatIds={selectedIds}
+            onToggleSeat={handleToggleSeat}
+          />
+        </div>
 
-      <BookingSummary
-        selectedSeats={selectedSeats}
-        onBook={handleBook}
-        onClear={handleClear}
-        isBooking={createBooking.isPending}
-        disabled={!userId}
-      />
+        <BookingSummary
+          selectedSeats={selectedSeats}
+          onBook={handleBook}
+          onClear={handleClear}
+          isBooking={createBooking.isPending}
+          disabled={!userId}
+        />
+      </div>
 
       {error && <div className="error-toast">{error}</div>}
-    </>
+    </div>
+  );
+}
+
+function BookingPageSkeleton() {
+  return (
+    <div className="booking-page">
+      <Link to="/" className="back-link">
+        ← Back
+      </Link>
+
+      <header className="booking-header">
+        <span className="eyebrow">Choose Your Seats</span>
+        <div
+          className="skeleton-line w-70"
+          style={{ height: 28, marginTop: 14 }}
+        />
+        <div
+          className="skeleton-line w-40"
+          style={{ marginTop: 14, height: 12 }}
+        />
+      </header>
+
+      <div className="booking-layout">
+        <div className="seat-map-wrap">
+          <div className="skeleton-seat-map">
+            <div className="screen" />
+            {Array.from({ length: 8 }).map((_, r) => (
+              <div key={r} className="row">
+                {Array.from({ length: 12 }).map((_, c) => (
+                  <div key={c} className="seat" />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -25,13 +25,16 @@ export function Seat({ seat, x, y, size, gap, isSelected, onClick }: Props) {
 
   return (
     <rect
+      className={isSelected ? "seat-selected" : undefined}
       x={x}
       y={y}
       width={r}
       height={r}
-      rx={3}
+      rx={5}
       fill={seatFill(seat, isSelected)}
-      opacity={!isAvailable && !isSelected ? 0.5 : 1}
+      opacity={!isAvailable && !isSelected ? 0.45 : 1}
+      stroke={isSelected ? "rgba(255,255,255,0.9)" : "none"}
+      strokeWidth={isSelected ? 1.5 : 0}
       cursor={isAvailable ? "pointer" : "not-allowed"}
       onClick={() => isAvailable && onClick(seat)}
     >

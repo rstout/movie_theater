@@ -6,6 +6,7 @@
     "build": "esbuild src/handlers/*.ts --bundle --platform=node --target=node20 --outdir=dist --external:pg-native"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.654.0",
     "pg": "^8.13.0"
   },
   "devDependencies": {

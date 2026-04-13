@@ -6,13 +6,27 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+interface SuccessOptions {
+  statusCode?: number;
+  cacheControl?: string;
+}
+
 export function success(
   body: unknown,
-  statusCode = 200
+  options: SuccessOptions | number = {}
 ): APIGatewayProxyResult {
+  const { statusCode = 200, cacheControl } =
+    typeof options === "number" ? { statusCode: options } : options;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...CORS_HEADERS,
+  };
+  if (cacheControl) {
+    headers["Cache-Control"] = cacheControl;
+  }
   return {
     statusCode,
-    headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+    headers,
     body: JSON.stringify(body),
   };
 }

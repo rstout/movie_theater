@@ -14,7 +14,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!seatMap) {
       return error("Showtime not found", 404);
     }
-    return success(seatMap);
+    return success(seatMap, {
+      cacheControl: "public, max-age=5, stale-while-revalidate=30",
+    });
   } catch (err: any) {
     console.error("getSeats error:", err);
     return error(err.message);

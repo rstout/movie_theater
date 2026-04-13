@@ -12,18 +12,21 @@ export function UserPicker({ currentUserId, onSelect }: Props) {
 
   return (
     <div className="user-picker">
-      <label>Logged in as:</label>
-      <select
-        value={currentUserId ?? ""}
-        onChange={(e) => onSelect(e.target.value)}
-      >
-        {!currentUserId && <option value="">Select user...</option>}
-        {users.map((u) => (
-          <option key={u.user_id} value={u.user_id}>
-            {u.name}
-          </option>
-        ))}
-      </select>
+      <label>Guest</label>
+      <div className="user-picker-select">
+        <select
+          value={currentUserId ?? ""}
+          onChange={(e) => onSelect(e.target.value)}
+          aria-label="Select user"
+        >
+          {!currentUserId && <option value="">Select user…</option>}
+          {users.map((u) => (
+            <option key={u.user_id} value={u.user_id}>
+              {u.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
